@@ -1,0 +1,39 @@
+---
+title: "Titanic Data Analysis"
+author: "Susrutha Gongalla"
+date: "October 8, 2015"
+output: html_document
+---
+
+This document performs data analysis of titanic dataset available on kaggle
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(party)
+library(plyr)
+library(ggplot2)
+
+```
+
+Starting the analysis by first loading the data
+```{r}
+# Loading the training and test data
+trainData <- read.csv("C:/Users/Susrutha/Desktop/Kaggle/Titanic/train.csv", header = T)
+testData <- read.csv("C:/Users/Susrutha/Desktop/Kaggle/Titanic/test.csv", header = T)
+
+# Transforming attribute domains to their appropriate classes
+trainData <- transform(trainData, Survived = as.factor(Survived),   
+                       Pclass = as.factor(Pclass),
+                       Name = as.character(Name))
+
+trainData <- trainData[complete.cases(trainData),]  # Getting rid of rows with missing values
+
+```
+
+Building a decision tree to be able to predict survival
+```{r, fig.width=12, fig.height=6}
+
+# Build a decision tree using the variables that may actually affect the survival outcome
+decisionTreeModel <- ctree(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare 
+                           + Embarked, data = trainData)
+plot(decisionTreeModel, type = "simple")
+```
+
