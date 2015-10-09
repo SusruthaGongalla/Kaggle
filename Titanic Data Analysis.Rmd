@@ -18,7 +18,7 @@ Starting the analysis by first loading the data
 ```{r}
 # Loading the training and test data
 trainData <- read.csv("C:/Users/Susrutha/Desktop/Kaggle/Titanic/train.csv", header = T)
-testData <- read.csv("C:/Users/Susrutha/Desktop/Kaggle/Titanic/test.csv", header = T)
+testDataComplete <- read.csv("C:/Users/Susrutha/Desktop/Kaggle/Titanic/test.csv", header = T)
 
 # Transforming attribute domains to their appropriate classes
 trainData <- transform(trainData, Survived = as.factor(Survived),   
@@ -40,12 +40,20 @@ plot(decisionTreeModel, type = "simple")
 
 Use the decision tree to make prediction
 ```{r}
-testData <- testData[,c(2, 4, 5, 6, 7, 9, 11)]
+testData <- testDataComplete[,c(2, 4, 5, 6, 7, 9, 11)]
 testData <- transform(testData, Pclass = as.factor(Pclass))
 levels(testData$Embarked) <- levels(trainData$Embarked)
 pred <- predict(decisionTreeModel, testData)
+results <- data.frame(PassengerId = testDataComplete[,1], Survived = pred)
 ```
 
-
+Use Random forests for predicting survival
+```{r}
+set.seed(10)
+rfModel <- cforest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare 
+                           + Embarked, data = trainData)
+rfPred <- predict(rfModel, testData, OOB = TRUE)
+rfResults <- data.frame(PassengerID = testDataComplete[,1], Survived = rfPred)
+```
 
 
