@@ -7,6 +7,7 @@ output: html_document
 
 This document performs data analysis of titanic dataset available on kaggle
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("C:/Users/Susrutha/Desktop/Kaggle/Titanic")
 library(party)
 library(plyr)
 library(ggplot2)
@@ -36,4 +37,15 @@ decisionTreeModel <- ctree(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare
                            + Embarked, data = trainData)
 plot(decisionTreeModel, type = "simple")
 ```
+
+Use the decision tree to make prediction
+```{r}
+testData <- testData[,c(2, 4, 5, 6, 7, 9, 11)]
+testData <- transform(testData, Pclass = as.factor(Pclass))
+levels(testData$Embarked) <- levels(trainData$Embarked)
+pred <- predict(decisionTreeModel, testData)
+```
+
+
+
 
